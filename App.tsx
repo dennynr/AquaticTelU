@@ -1,118 +1,99 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import {GluestackUIProvider, Text, Box} from '@gluestack-ui/themed';
+import {config} from '@gluestack-ui/config'; // Optional if you want to use default theme
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {Login, Home, History,Notifications} from './Screens/Index';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/FontAwesome6';
+const Stack = createNativeStackNavigator();
+const noHead = {headerShown: false};
+const Tab = createBottomTabNavigator();
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const Tabs = () => {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <Tab.Navigator
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color}) => {
+          let iconName;
+          switch (route.name) {
+            case 'Home':
+              return (
+                <Icon name="square-poll-vertical" size={30} color="#0C356A" />
+              );
+            case 'History':
+              return (
+                <Icon name="clock-rotate-left" size={30} color="#0C356A" />
+              );
+            default:
+              return null;
+          }
+        },
+        tabBarIconStyle: {
+          // marginTop: ,
+        },
+        tabBarStyle: {
+          height: 70,
+          borderColor: '#021C35',
+          backgroundColor: '#fff',
+          borderRadius: 10,
+        },
+        tabBarLabel: ({focused}) => {
+          // Mengembalikan null jika tab sedang difokuskan
+          return focused ? null : <Text style={{display: 'none'}}></Text>;
+        },
+      })}>
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          ...noHead,
+          
+        }}
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <Tab.Screen
+        name="History"
+        component={History}
+        options={{
+          ...noHead,
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
+
+export default function App() {
+  return (
+    <GluestackUIProvider config={config}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              ...noHead,
+              statusBarColor: '#0C356A',
+              statusBarStyle: 'white',
+            }}
+          />
+          <Stack.Screen
+            name="Tabs"
+            component={Tabs}
+            options={{
+              ...noHead,
+              statusBarColor: '#0C356A',
+              statusBarStyle: 'white',
+            }}
+          />
+          <Stack.Screen
+            name="Notif"
+            component={Notifications}
+            options={{
+              statusBarColor: '#0C356A',
+              statusBarStyle: 'white',
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </GluestackUIProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
-export default App;
