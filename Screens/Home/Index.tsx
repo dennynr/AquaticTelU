@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, ScrollView, Text } from 'react-native';
 import { Box, HStack, VStack } from '@gluestack-ui/themed';
 import { Header } from '../../Components/Home/Index';
@@ -10,8 +10,34 @@ import {
   ContributionGraph,
   StackedBarChart,
 } from 'react-native-chart-kit';
+import { getDeviceData } from '../../Config/Action';
 
 const Home = () => {
+  const [temperature, setTemperature] = useState(null);
+  const [pHvalue, setpHvalue] = useState(null);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getDeviceData();
+        if (data && data.ESP32_001) {
+          setTemperature(data.ESP32_001.temperature);
+          setpHvalue(data.ESP32_001.ph_sensor.pH_value);
+        }
+      } catch (error) {
+        console.error('Error fetching device data:', error);
+      }
+    };
+
+    // Initial fetch
+    fetchData();
+
+    // Fetch data every 1 milliseconds
+    const intervalId = setInterval(fetchData, 1);
+
+    // Clean up the intervalr
+    return () => clearInterval(intervalId);
+  }, []); // Empty dependency array to run effect only once
+
   const chartConfig = {
     barRadius: 10,
     decimalPlaces: 0,
@@ -27,7 +53,7 @@ const Home = () => {
     },
   };
 
-  const renderChart = (data, yAxisSuffix, backgroundColor, strokeColor) => (
+  const renderChart = (data, yAxisSuffix, backgroundColor, strokeColor, title = null) => (
     <Box alignItems="center">
       <LineChart
         data={{
@@ -38,6 +64,7 @@ const Home = () => {
             },
           ],
         }}
+        
         width={360}
         height={220}
         yAxisSuffix={yAxisSuffix}
@@ -55,6 +82,7 @@ const Home = () => {
           borderRadius: 8,
         }}
       />
+      <Text style={{ fontWeight: 'bold' }}>{title}</Text>
     </Box>
   );
 
@@ -108,7 +136,9 @@ const Home = () => {
                     p={10}
                     rounded={15}>
                     <Text style={{ fontWeight: 'bold' }}>Potential Hydrogen</Text>
-                    <Text style={{ fontWeight: 'bold', fontSize: 40 }}>7.4</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 40 }}>
+                      {pHvalue}
+                    </Text>
                     <Text>pH</Text>
                   </Box>
                   <Box
@@ -119,7 +149,9 @@ const Home = () => {
                     p={10}
                     rounded={15}>
                     <Text style={{ fontWeight: 'bold' }}>Suhu</Text>
-                    <Text style={{ fontWeight: 'bold', fontSize: 40 }}>30</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 40 }}>
+                    {temperature}
+                    </Text>
                     <Text>°C</Text>
                   </Box>
                 </HStack>
@@ -149,25 +181,27 @@ const Home = () => {
                 </HStack>
               </VStack>
               {renderChart(
-                [Math.random(), Math.random(), Math.random(), Math.random()],
+                [Math.random(), Math.random(), Math.random(), pHvalue],
                 'pH',
                 '#FFEDD6',
-                '#D7BD9B'
+                '#D7BD9B',
+                "Potential Hydrogen"
               )}
             </Box>
             <Box>
               {renderChart(
-                [30, 20, Math.random(), Math.random()],
+                [30, 20, Math.random(), temperature],
                 '°C',
                 '#D6DCFF',
-                '#9DA6D8'
+                '#9DA6D8',
+                "Suhu"
               )}
             </Box>
             <Box>
-              {renderChart([8, 2, 5, 3], 'mg/L', '#FFD6F5', '#D59AC7')}
+              {renderChart([8, 2, 5, 3], 'mg/L', '#FFD6F5', '#D59AC7', "Dissolved oxygen")}
             </Box>
             <Box>
-              {renderChart([8, 2, 5, 3], 'g/kg', '#D6FFE1', '#8FCFA0')}
+              {renderChart([8, 2, 5, 3], 'g/kg', '#D6FFE1', '#8FCFA0', "Salinitas")}
             </Box>
           </VStack>
         </Box>
