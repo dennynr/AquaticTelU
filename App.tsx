@@ -1,8 +1,8 @@
 import {GluestackUIProvider, Text, Box} from '@gluestack-ui/themed';
-import {config} from '@gluestack-ui/config'; // Optional if you want to use default theme
+import {config} from '@gluestack-ui/config';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Login, Home, History, Notifications} from './Screens/Index';
+import {Login, Home, History, Notifications,Controller} from './Screens/Index';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 const Stack = createNativeStackNavigator();
@@ -23,6 +23,10 @@ const Tabs = () => {
             case 'History':
               return (
                 <Icon name="clock-rotate-left" size={30} color="#0C356A" />
+              );
+            case 'Controller':
+              return (
+                <Icon name="toolbox" size={30} color="#0C356A" />
               );
             default:
               return null;
@@ -52,6 +56,13 @@ const Tabs = () => {
       <Tab.Screen
         name="History"
         component={History}
+        options={{
+          ...noHead,
+        }}
+      />
+      <Tab.Screen
+        name="Controller"
+        component={Controller}
         options={{
           ...noHead,
         }}
