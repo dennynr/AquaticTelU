@@ -2,7 +2,7 @@ import {GluestackUIProvider, Text, Box} from '@gluestack-ui/themed';
 import {config} from '@gluestack-ui/config'; // Optional if you want to use default theme
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Login, Home, History,Notifications} from './Screens/Index';
+import {Login, Home, History, Notifications} from './Screens/Index';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome6';
 const Stack = createNativeStackNavigator();
@@ -47,7 +47,6 @@ const Tabs = () => {
         component={Home}
         options={{
           ...noHead,
-          
         }}
       />
       <Tab.Screen
@@ -90,6 +89,11 @@ export default function App() {
             options={{
               statusBarColor: '#0C356A',
               statusBarStyle: 'white',
+              title: 'Notifications',
+              headerStyle: {
+                backgroundColor: '#0C356A', // Warna latar belakang header
+              },
+              headerTintColor: '#ffffff', // Warna teks header
             }}
           />
         </Stack.Navigator>
