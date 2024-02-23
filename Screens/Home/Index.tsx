@@ -15,14 +15,19 @@ import { getDeviceData } from '../../Config/Action';
 const Home = () => {
   const [temperature, setTemperature] = useState(null);
   const [pHvalue, setpHvalue] = useState(null);
+  const [DO, setDO] = useState(null);
+  const [TDS, setTDS] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getDeviceData();
+        // console.log('Fetched Data:', data);
         if (data && data.ESP32_001) {
           setTemperature(data.ESP32_001.temperature);
-          setpHvalue(data.ESP32_001.ph_sensor.pH_value);
-        }
+          setpHvalue(data.ESP32_001.pH);
+          setDO(data.ESP32_001.DO);
+          setTDS(data.ESP32_001.TDS);
+        } 
       } catch (error) {
         console.error('Error fetching device data:', error);
       }
@@ -164,7 +169,9 @@ const Home = () => {
                     p={10}
                     rounded={15}>
                     <Text style={{ fontWeight: 'bold' }}>Dissolved oxygen</Text>
-                    <Text style={{ fontWeight: 'bold', fontSize: 40 }}>8</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 40 }}>
+                      {DO}
+                    </Text>
                     <Text>mg/L</Text>
                   </Box>
                   <Box
@@ -175,7 +182,9 @@ const Home = () => {
                     p={10}
                     rounded={15}>
                     <Text style={{ fontWeight: 'bold' }}>Salinitas</Text>
-                    <Text style={{ fontWeight: 'bold', fontSize: 40 }}>18</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 40 }}>
+                      {TDS}
+                    </Text>
                     <Text>g/kg</Text>
                   </Box>
                 </HStack>
@@ -198,10 +207,10 @@ const Home = () => {
               )}
             </Box>
             <Box>
-              {renderChart([8, 2, 5, 3], 'mg/L', '#FFD6F5', '#D59AC7', "Dissolved oxygen")}
+              {renderChart([8, 2, 5, DO], 'mg/L', '#FFD6F5', '#D59AC7', "Dissolved oxygen")}
             </Box>
             <Box>
-              {renderChart([8, 2, 5, 3], 'g/kg', '#D6FFE1', '#8FCFA0', "Salinitas")}
+              {renderChart([8, 2, 5, TDS], 'g/kg', '#D6FFE1', '#8FCFA0', "Salinitas")}
             </Box>
           </VStack>
         </Box>
