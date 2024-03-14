@@ -18,15 +18,15 @@ const Tabs = () => {
           switch (route.name) {
             case 'Home':
               return (
-                <Icon name="square-poll-vertical" size={30} color="#0C356A" />
+                <Icon name="square-poll-vertical" size={30} color={focused ? '#0C356A' : '#175fbd'} />
               );
             case 'History':
               return (
-                <Icon name="clock-rotate-left" size={30} color="#0C356A" />
+                <Icon name="clock-rotate-left" size={30} color={focused ? '#0C356A' : '#175fbd'} />
               );
             case 'Controller':
               return (
-                <Icon name="toolbox" size={30} color="#0C356A" />
+                <Icon name="toolbox" size={30} color={focused ? '#0C356A' : '#175fbd'} />
               );
             default:
               return null;

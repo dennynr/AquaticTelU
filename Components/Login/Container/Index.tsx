@@ -17,6 +17,7 @@ import {
   Icon,
   SearchIcon,
   FormControl,
+  ButtonSpinner,
   Text,
 } from '@gluestack-ui/themed';
 import {TextInput} from 'react-native-paper';
@@ -24,6 +25,17 @@ import {useNavigation} from '@react-navigation/native';
 const Container = () => {
   const navigation = useNavigation();
   const  [hiddenPw , setHiddenPw] = useState(true)
+  const [loadingSpinner, setLoadingSpinner] = useState(false)
+  const handlePress = () => {
+    setLoadingSpinner(true);
+  
+    // Simulate a delay using setTimeout
+    setTimeout(() => {
+      navigation.navigate('Tabs');
+      setLoadingSpinner(false);
+    }, 1000); // Adjust the delay time (in milliseconds) as needed
+  };
+  
   return (
     <Box
       backgroundColor="white"
@@ -82,10 +94,17 @@ const Container = () => {
         action={'primary'}
         variant={'solid'}
         size={'lg'}
-        backgroundColor="#0174BE"
+        backgroundColor='$blue800'
         isDisabled={false}
-        onPress={() => navigation.navigate('Tabs')}>
-        <ButtonText color="#FFF0CE">Masuk</ButtonText>
+        onPress={handlePress}>
+          {loadingSpinner ? (
+            <>
+              <ButtonSpinner mr={'$1'} />
+              <ButtonText color='$white'>Loading...</ButtonText>
+            </>
+          ) : (
+            <ButtonText color='$white'>Masuk</ButtonText>
+          )}
       </Button>
     </Box>
   );

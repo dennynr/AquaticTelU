@@ -10,21 +10,25 @@ import {
   ContributionGraph,
   StackedBarChart,
 } from 'react-native-chart-kit';
-import { getDeviceData } from '../../Config/Action';
+import { getDeviceData, getpHData } from '../../Config/Action';
 
 const Home = () => {
   const [temperature, setTemperature] = useState(null);
   const [pHvalue, setpHvalue] = useState(null);
   const [DO, setDO] = useState(null);
   const [TDS, setTDS] = useState(null);
+  const trimDigit = (data) => (data ? parseFloat(data).toFixed(1) : "0");
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getDeviceData();
+        const dataTS = await getpHData();
         // console.log('Fetched Data:', data);
-        if (data && data.ESP32_001) {
+        if (data && dataTS) {
           setTemperature(data.ESP32_001.temperature);
-          setpHvalue(data.ESP32_001.pH);
+          setpHvalue(dataTS.channel.last_entry_id)
           setDO(data.ESP32_001.DO);
           setTDS(data.ESP32_001.TDS);
         } 
@@ -36,8 +40,8 @@ const Home = () => {
     // Initial fetch
     fetchData();
 
-    // Fetch data every 1 milliseconds
-    const intervalId = setInterval(fetchData, 1);
+    // Fetch data every 250 ms
+    const intervalId = setInterval(fetchData, 250);
 
     // Clean up the intervalr
     return () => clearInterval(intervalId);
@@ -142,7 +146,7 @@ const Home = () => {
                     rounded={15}>
                     <Text style={{ fontWeight: 'bold' }}>Potential Hydrogen</Text>
                     <Text style={{ fontWeight: 'bold', fontSize: 40 }}>
-                      {pHvalue}
+                      {trimDigit(pHvalue)}
                     </Text>
                     <Text>pH</Text>
                   </Box>
@@ -155,7 +159,7 @@ const Home = () => {
                     rounded={15}>
                     <Text style={{ fontWeight: 'bold' }}>Suhu</Text>
                     <Text style={{ fontWeight: 'bold', fontSize: 40 }}>
-                    {temperature}
+                    {trimDigit(temperature)}
                     </Text>
                     <Text>°C</Text>
                   </Box>
@@ -170,7 +174,7 @@ const Home = () => {
                     rounded={15}>
                     <Text style={{ fontWeight: 'bold' }}>Dissolved oxygen</Text>
                     <Text style={{ fontWeight: 'bold', fontSize: 40 }}>
-                      {DO}
+                      {trimDigit(DO)}
                     </Text>
                     <Text>mg/L</Text>
                   </Box>
@@ -183,7 +187,7 @@ const Home = () => {
                     rounded={15}>
                     <Text style={{ fontWeight: 'bold' }}>Salinitas</Text>
                     <Text style={{ fontWeight: 'bold', fontSize: 40 }}>
-                      {TDS}
+                      {trimDigit(TDS)}
                     </Text>
                     <Text>g/kg</Text>
                   </Box>
