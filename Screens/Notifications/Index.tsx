@@ -102,7 +102,7 @@ const Notifications = () => {
                     py={10}
                     px={10}
                     backgroundColor={
-                      data.status === 'Tidak Hujan' ? '#F0F9FF' : '#FFF1F0'
+                      data.status === 'Normal' ? '#F0F9FF' : '#FFF1F0'
                     }
                     rounded={15}
                     mb={10}>
@@ -113,13 +113,13 @@ const Notifications = () => {
                         rounded={15}>
                         <IconButton
                           icon={
-                            data.status === 'Tidak Hujan'
+                            data.status === 'Normal'
                               ? 'weather-cloudy'
                               : 'weather-pouring'
                           }
                           size={35}
                           iconColor={
-                            data.status === 'Tidak Hujan' ? '#BEE7FF' : '#FFBEBE'
+                            data.status === 'Normal' ? '#BEE7FF' : '#FFBEBE'
                           }
                         />
                       </Box>
@@ -131,7 +131,7 @@ const Notifications = () => {
                           <Text
                             style={{
                               color:
-                                data.status === 'Tidak Hujan'
+                                data.status === 'Normal'
                                   ? '#45BBFF'
                                   : '#FF4545',
                             }}>
