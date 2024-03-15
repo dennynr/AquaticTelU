@@ -17,7 +17,8 @@ const Home = () => {
   const [pHvalue, setpHvalue] = useState(null);
   const [DO, setDO] = useState(null);
   const [TDS, setTDS] = useState(null);
-  const trimDigit = (data) => (data ? parseFloat(data).toFixed(1) : "0");
+  const trimDigit = (data, digit = 1) => (data ? parseFloat(data).toFixed(digit) : "0");
+
 
 
   useEffect(() => {
@@ -25,10 +26,14 @@ const Home = () => {
       try {
         const data = await getDeviceData();
         const dataTS = await getpHData();
+
+        // Accessing the first item in the feeds array directly
+      const firstFeed = dataTS.feeds[0];    
         // console.log('Fetched Data:', data);
         if (data && dataTS) {
           setTemperature(data.ESP32_001.temperature);
-          setpHvalue(dataTS.channel.last_entry_id)
+          // Comparing last_entry_id with entry_id of the latest feed
+          setpHvalue(firstFeed.field1); 
           setDO(data.ESP32_001.DO);
           setTDS(data.ESP32_001.TDS);
         } 
@@ -36,6 +41,8 @@ const Home = () => {
         console.error('Error fetching device data:', error);
       }
     };
+    
+    
 
     // Initial fetch
     fetchData();
@@ -146,7 +153,7 @@ const Home = () => {
                     rounded={15}>
                     <Text style={{ fontWeight: 'bold' }}>Potential Hydrogen</Text>
                     <Text style={{ fontWeight: 'bold', fontSize: 40 }}>
-                      {trimDigit(pHvalue)}
+                      {trimDigit(pHvalue, 2)}
                     </Text>
                     <Text>pH</Text>
                   </Box>
